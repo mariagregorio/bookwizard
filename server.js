@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
 
 const users = require('./routes/api/users.js')
 
@@ -7,6 +8,9 @@ const app = express();
 
 const dotenv = require('dotenv');
 dotenv.config();
+
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json());
 
 // DB Config
 const dbOptions = {
@@ -17,9 +21,9 @@ const dbOptions = {
 }
 
 //Connect to mongodb
-/*mongoose.connect(process.env.mongoURI, dbOptions)
+mongoose.connect(process.env.mongoURI, dbOptions)
     .then(() => console.log('MongoDB Connected'))
-    .catch(err => console.log(err));*/
+    .catch(err => console.log(err));
 
 app.get('/', (req, res) => res.send('Hello'));
 
