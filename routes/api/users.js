@@ -22,7 +22,7 @@ router.post('/register', (req, res) => {
 
                 bcrypt.genSalt(10, (err, salt) => {
                     bcrypt.hash(newUser.password, salt, (err, hash) => {
-                        if(err) throw err;
+                        if (err) throw err;
                         newUser.password = hash;
                         newUser.save()
                             .then(user => res.json(user))
@@ -31,6 +31,30 @@ router.post('/register', (req, res) => {
                 })
             }
         })
-})
+});
+
+// POST /users/login
+router.post('/login', (req, res) => {
+    const email = req.body.email;
+    const password = req.body.password;
+
+    User.findOne({email: email})
+        .then(user => {
+            // check for user
+            if(user) {
+                // check for password
+                bcrypt.compare(password, user.password, (err, match) => {
+                    if (err) throw err;
+                    if (match) {
+                        res.json({message: 'Welcome'})
+                    } else {
+                        return res.status(400).json({message: 'Incorrect password'});
+                    }
+                });
+            } else {
+                return res.status(404).json({message: 'Email not registered'});
+            }
+        })
+});
 
 module.exports = router;
